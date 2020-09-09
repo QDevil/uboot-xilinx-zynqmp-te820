@@ -1,0 +1,21 @@
+version: "3.7"
+
+## Spin up a container that matches what the build server is using.
+services:
+  uboot-te820:
+    build: .
+    user: "1000:1000"
+    init: true
+    privileged: true
+    volumes:
+      - type: bind
+        source: "${XILINX}"
+        target: /tools/Xilinx
+        read_only: true
+      - type: bind
+        source: ${PWD}/bashrc-extras
+        target: /home/jenkins/.bash_aliases
+        read_only: true
+      - type: bind
+        source: ${PWD}/..
+        target: /home/jenkins/workspace/uboot-te820

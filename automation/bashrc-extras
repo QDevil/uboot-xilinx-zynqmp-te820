@@ -1,0 +1,2 @@
+export XILINX=/tools/Xilinx
+export XSDK=$XILINX/SDK/2018.3

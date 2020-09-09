@@ -1,0 +1,86 @@
+pipeline {
+  agent {
+    dockerfile {
+      dir 'automation'
+      filename 'Dockerfile'
+      args '-v /tools/Xilinx:/tools/Xilinx:ro'
+    }
+  }
+  environment {
+    // Xilinx tools have to be mounted from the build server.
+    XILINX = '/tools/Xilinx'
+    XSDK = "$XILINX/SDK/2018.3"
+    // HOME defaults to '/' for some reason.
+    HOME = "$WORKSPACE"
+    // Extract concise branch name.
+    BRANCH = GIT_BRANCH.substring(GIT_BRANCH.lastIndexOf('/') + 1, GIT_BRANCH.length())
+  }
+  parameters {
+    booleanParam(name: 'clean', description: 'Clean workspace instead of build')
+  }
+  stages {
+    stage('clean') {
+      when {
+        expression { params.clean }
+      }
+      steps {
+        echo "Cleaning branch ${env.BRANCH}"
+        cleanWs()
+      }
+    }
+    stage('download') {
+      when {
+        expression { !params.clean }
+      }
+      steps {
+        echo "Building branch ${env.BRANCH}"
+        echo "Commit ${env.GIT_COMMIT}"
+        echo "Previously built ${env.GIT_PREVIOUS_COMMIT}"
+        sh 'scripts/download-xilinx-uboot.sh'
+      }
+    }
+    stage('build') {
+      when {
+        expression { !params.clean }
+      }
+      steps {
+        sh 'scripts/build.sh'
+      }
+    }
+  }
+  post {
+    success {
+      slackSend(
+        color: 'good',
+        message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded (<${env.BUILD_URL}/console|Output>)"
+      )
+      s3Upload(
+        profileName: 'build-server',
+        dontWaitForConcurrentBuildCompletion: false,
+        consoleLogLevel: 'INFO',
+        pluginFailureResultConstraint: 'FAILURE',
+        dontSetBuildResultOnFailure: true,
+        userMetadata: [
+          [key: 'repo', value: "${env.JOB_NAME}"],
+          [key: 'branch', value: "${env.BRANCH}"],
+          [key: 'commit', value: "${env.GIT_COMMIT}"]
+        ],
+        entries: [[
+          bucket: 'qdevil-artifacts/bootloader',
+          selectedRegion: 'eu-west-1',
+          sourceFile: 'u-boot-xlnx/u-boot.elf'
+        ], [
+          bucket: 'qdevil-artifacts/bootloader',
+          selectedRegion: 'eu-west-1',
+          sourceFile: 'u-boot-xlnx/include/configs/qdevil.h'
+        ]]
+      )
+    }
+    failure {
+      slackSend(
+        color: 'bad',
+        message: "${env.JOB_NAME} (branch ${env.BRANCH}) build ${env.BUILD_NUMBER} FAILED (<${env.BUILD_URL}/console|Output>)"
+      )
+    }
+  }
+}

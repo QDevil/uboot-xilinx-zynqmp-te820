@@ -1,10 +1,30 @@
-# Universal bootloader for Trenz Xilinx ZynqMP SoM devices
+# Universal bootloader for Trenz Xilinx ZynqMP SoM
 
 This repository contains the second-stage bootloader for devices based on Xilinx Zynqmp FPGAs on Trenz TE820 SoM boards.
+
+## Background
+
+The U-Boot STBL is meant to be used with this *bootgen* specification:
+```
+flash_image:
+{
+    [pmufw_image] zynqmp_pmufw.elf
+    [bootloader, destination_cpu = a53-0] zynqmp_fsbl.elf
+    [offset = 0x003b4c0, destination_device = pl] test_board.bit
+    [offset = 0x1b00000, destination_cpu = a53-0, exception_level = el-3, trustzone] bl31.elf
+    [offset = 0x1b0ca40, destination_cpu = a53-0, exception_level = el-2] u-boot.elf
+    [offset = 0x2000000] app0.bin
+    [offset = 0x5000000] app1.bin
+}
+```
 
 The first-stage bootloader (FSBL), ARM Trusted Firmware (ATF) and Power Management Unit (PMU) firmware are taken directly from Trenz demo project, as is.
 
 The second-stage bootloader (U-Boot), however, needs to have its configuration compiled into the binary, so this repository is an automated way to build U-Boot so that it works with Trenz Xilinx ZyncMP SoM.
+
+The offsets in the flash memory are also reflected in the configuration of U-Boot, more specifically, the offsets are enbedded in U-Boot environment variables.
+
+The files in directory `src` hold the specific U-Boot configuration, so by changing these files you can make customisations.
 
 ## Theory of operation
 
@@ -14,10 +34,6 @@ This repository is meant to be built automatically by Jenkins in a container, us
 - Download known-good version of U-Boot source code.
 - Compile U-Boot with specific configuration.
 - Upload the binary result to an AWS S3 bucket.
-
-## Customisation
-
-The files in directory `src` hold the specific U-Boot configuration, so by changing these files you can make customisations.
 
 ## Build server
 

@@ -58,13 +58,13 @@ pipeline {
         s3Upload(
           file: 'u-boot-xlnx/u-boot.elf',
           bucket: 'qdevil-artifacts',
-          path: 'bootloader/',
+          path: 'uboot/',
           metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
         )
         s3Upload(
           file: 'u-boot-xlnx/include/configs/qdevil.h',
           bucket: 'qdevil-artifacts',
-          path: 'bootloader/',
+          path: 'uboot/',
           metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
         )
       }

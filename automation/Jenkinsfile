@@ -67,6 +67,12 @@ pipeline {
           path: 'uboot/',
           metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
         )
+        s3Upload(
+          file: 'u-boot-xlnx/include/configs/.config',
+          bucket: 'qdevil-artifacts',
+          path: 'uboot/config',
+          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
+        )
       }
     }
     failure {

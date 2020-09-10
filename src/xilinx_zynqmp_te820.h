@@ -53,11 +53,11 @@
     "pl_off=" TE820_XSTR(FLASH_PL_OFFSET) "\0" \
     "pl_len=" TE820_XSTR(FLASH_PL_LENGTH) "\0" \
     "apu0_addr=" TE820_XSTR(DRAM_APU0_ADDRESS) "\0" \
-    "apu0_off=" TE820_XSTR(FLASH_AP0_OFFSET) "\0" \
-    "apu0_len=" TE820_XSTR(FLASH_AP0_LENGTH) "\0"\
+    "apu0_off=" TE820_XSTR(FLASH_APU0_OFFSET) "\0" \
+    "apu0_len=" TE820_XSTR(FLASH_APU0_LENGTH) "\0"\
     "apu1_addr=" TE820_XSTR(DRAM_APU1_ADDRESS) "\0" \
-    "apu1_off=" TE820_XSTR(FLASH_AP1_OFFSET) "\0" \
-    "apu1_len=" TE820_XSTR(FLASH_AP1_LENGTH) "\0"\
+    "apu1_off=" TE820_XSTR(FLASH_APU1_OFFSET) "\0" \
+    "apu1_len=" TE820_XSTR(FLASH_APU1_LENGTH) "\0"\
     "boot_te820=sf probe;sf read $apu0_addr $apu0_off $apu0_len;sf read $apu1_addr $apu1_off $apu1_len;go $apu0_addr\0"
 
 #include <configs/xilinx_zynqmp.h>

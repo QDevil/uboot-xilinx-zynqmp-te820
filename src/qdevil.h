@@ -23,7 +23,7 @@
 #define FLASH_APU1_OFFSET 0x5000000  /* Halfway between APU0 and last addr */
 #define FLASH_APU1_LENGTH 0x000d048  /* Size of dummy app (max 48 MiB) */
 
-#define DRAM_APU0_ADDRESS 0x0000000  /* First DRAM addr */
+#define DRAM_APU0_ADDRESS 0x0001000  /* First DRAM addr after (what?) */
 #define DRAM_APU1_ADDRESS 0x2000000  /* 64 MiB after APU0 */
 
 #include <configs/xilinx_zynqmp_te820.h>

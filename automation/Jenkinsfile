@@ -54,27 +54,20 @@ pipeline {
         color: 'good',
         message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded (<${env.BUILD_URL}/console|Output>)"
       )
-      s3Upload(
-        profileName: 'build-server',
-        dontWaitForConcurrentBuildCompletion: false,
-        consoleLogLevel: 'INFO',
-        pluginFailureResultConstraint: 'FAILURE',
-        dontSetBuildResultOnFailure: true,
-        userMetadata: [
-          [key: 'repo', value: "${env.JOB_NAME}"],
-          [key: 'branch', value: "${env.BRANCH}"],
-          [key: 'commit', value: "${env.GIT_COMMIT}"]
-        ],
-        entries: [[
-          bucket: 'qdevil-artifacts/bootloader',
-          selectedRegion: 'eu-west-1',
-          sourceFile: 'u-boot-xlnx/u-boot.elf'
-        ], [
-          bucket: 'qdevil-artifacts/bootloader',
-          selectedRegion: 'eu-west-1',
-          sourceFile: 'u-boot-xlnx/include/configs/qdevil.h'
-        ]]
-      )
+      withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
+        s3Upload(
+          file: 'u-boot-xlnx/u-boot.elf',
+          bucket: 'qdevil-artifacts',
+          path: 'bootloader/',
+          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
+        )
+        s3Upload(
+          file: 'u-boot-xlnx/include/configs/qdevil.h',
+          bucket: 'qdevil-artifacts',
+          path: 'bootloader/',
+          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
+        )
+      }
     }
     failure {
       slackSend(

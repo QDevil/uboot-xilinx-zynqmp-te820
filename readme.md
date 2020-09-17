@@ -10,11 +10,12 @@ flash_image:
 {
     [pmufw_image] zynqmp_pmufw.elf
     [bootloader, destination_cpu = a53-0] zynqmp_fsbl.elf
-    [offset = 0x003b4c0, destination_device = pl] test_board.bit
-    [offset = 0x1b00000, destination_cpu = a53-0, exception_level = el-3, trustzone] bl31.elf
-    [offset = 0x1b0ca40, destination_cpu = a53-0, exception_level = el-2] u-boot.elf
-    [offset = 0x2000000] app0.bin
-    [offset = 0x5000000] app1.bin
+    [destination_cpu = a53-0, exception_level = el-3, trustzone] bl31.elf
+    [destination_cpu = a53-0, exception_level = el-2] u-boot.elf
+    // offset 0x0120000 is the U-Boot environment
+    [offset = 0x01a0000] app0.bin
+    // offset 0x4000000 is for app1.bin
+    // offset 0x6000000 is for PL bitstream
 }
 ```
 

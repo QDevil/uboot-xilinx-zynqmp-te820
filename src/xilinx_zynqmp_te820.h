@@ -51,6 +51,7 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
     "uboot_ver=2018.1\0" \
     "qdevil_ver=1\0" \
+    "firmware_updates=0\0" \
     "pl_addr=" TE820_XSTR(DRAM_APU0_ADDRESS) "\0" \
     "pl_off=" TE820_XSTR(FLASH_PL_OFFSET) "\0" \
     "pl_len=" TE820_XSTR(FLASH_PL_LENGTH) "\0" \
@@ -60,7 +61,8 @@
     "apu1_addr=" TE820_XSTR(DRAM_APU1_ADDRESS) "\0" \
     "apu1_off=" TE820_XSTR(FLASH_APU1_OFFSET) "\0" \
     "apu1_len=" TE820_XSTR(FLASH_APU1_LENGTH) "\0"\
-    "boot_minimal=sf probe;sf read $apu0_addr $apu0_off $apu0_len;go $apu0_addr\0" \
+    "boot_apu0=sf probe;sf read $apu0_addr $apu0_off $apu0_len;go $apu0_addr\0" \
+    "boot_apus=sf probe;sf read $apu0_addr $apu0_off $apu0_len;sf read $apu1_addr $apu1_off $apu1_len;go $apu0_addr\0" \
     "boot_full=sf probe;sf read $pl_addr $pl_off $pl_len;fpga load 0 $pl_addr $pl_len;sf read $apu0_addr $apu0_off $apu0_len;sf read $apu1_addr $apu1_off $apu1_len;go $apu0_addr\0"
 
 #include <configs/xilinx_zynqmp.h>
@@ -77,7 +79,7 @@
 
 #ifdef CONFIG_BOOTCOMMAND
 #undef CONFIG_BOOTCOMMAND
-#define CONFIG_BOOTCOMMAND  "run boot_minimal"
+#define CONFIG_BOOTCOMMAND  "run boot_apu0"
 #endif
 
 #endif /* __CONFIG_ZYNQMP_TE820_H */

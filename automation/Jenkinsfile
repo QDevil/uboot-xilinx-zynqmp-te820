@@ -54,25 +54,22 @@ pipeline {
         color: 'good',
         message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded (<${env.BUILD_URL}/console|Output>)"
       )
-      withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
-        s3Upload(
-          file: 'u-boot-xlnx/u-boot.elf',
-          bucket: 'qdevil-artifacts',
-          path: 'uboot/',
-          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
-        )
-        s3Upload(
-          file: 'u-boot-xlnx/include/configs/qdevil.h',
-          bucket: 'qdevil-artifacts',
-          path: 'uboot/',
-          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
-        )
-        s3Upload(
-          file: 'u-boot-xlnx/.config',
-          bucket: 'qdevil-artifacts',
-          path: 'uboot/config',
-          metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
-        )
+      script {
+        def artifacts = [
+          'u-boot.elf',
+          'include/configs/qdevil.h',
+          '.config'
+        ]
+        artifacts.each {
+          withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
+            s3Upload(
+              file: "u-boot-xlnx/${it}",
+              bucket: 'qdevil-artifacts',
+              path: 'uboot/',
+              metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
+            )
+          }
+        }
       }
     }
     failure {

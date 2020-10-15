@@ -52,7 +52,7 @@ pipeline {
     success {
       slackSend(
         color: 'good',
-        message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded (<${env.BUILD_URL}/console|Output>)"
+        message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded"
       )
       script {
         def artifacts = [

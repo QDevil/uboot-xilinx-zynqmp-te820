@@ -3,8 +3,7 @@
     , "file_exclude_patterns":
       []
     , "folder_exclude_patterns":
-      [ "u-boot-xlnx"
-      ]
+      []
     }
   ]
 }

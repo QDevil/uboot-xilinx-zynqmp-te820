@@ -10,20 +10,19 @@ flash_image:
 {
     [pmufw_image] zynqmp_pmufw.elf
     [bootloader, destination_cpu = a53-0] zynqmp_fsbl.elf
-    [destination_cpu = a53-0, exception_level = el-3, trustzone] bl31.elf
-    [destination_cpu = a53-0, exception_level = el-2] u-boot.elf
+    [destination_cpu = a53-0, exception_level = el-3] u-boot.elf
     // offset 0x0120000 is the U-Boot environment
-    [offset = 0x01a0000] app0.bin
+    [offset = 0x0140000] app0.bin
     // offset 0x4000000 is for app1.bin
     // offset 0x6000000 is for PL bitstream
 }
 ```
 
-The first-stage bootloader (FSBL), ARM Trusted Firmware (ATF) and Power Management Unit (PMU) firmware are taken directly from Trenz demo project, as is.
+The first-stage bootloader (FSBL) and Power Management Unit (PMU) firmware are taken directly from Trenz demo project, as is.
 
-The second-stage bootloader (U-Boot), however, needs to have its configuration compiled into the binary, so this repository is an automated way to build U-Boot so that it works with Trenz Xilinx ZyncMP SoM.
+The second-stage bootloader (U-Boot), however, needs to be tweaked and have its configuration compiled into the binary, so this repository is an automated way to build U-Boot so that it can boot bare metal apps on Trenz Xilinx ZyncMP SoM.
 
-The offsets in the flash memory are also reflected in the configuration of U-Boot, more specifically, the offsets are enbedded in U-Boot environment variables.
+The offsets in the flash memory are also reflected in the configuration of U-Boot; more specifically, the offsets are enbedded in U-Boot environment variables.
 
 The files in directory `src` hold the specific U-Boot configuration, so by changing these files you can make customisations.
 

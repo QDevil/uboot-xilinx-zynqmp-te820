@@ -281,6 +281,7 @@ static char *zynqmp_get_silicon_idcode_name(void)
 int board_early_init_f(void)
 {
 	int ret = 0;
+/* https://forums.xilinx.com/t5/Embedded-Linux/U-Boot-EL3/m-p/1167800 */
 #if 0
 #if !defined(CONFIG_SPL_BUILD) && defined(CONFIG_CLK_ZYNQMP)
 	u32 pm_api_version;
@@ -402,6 +403,8 @@ int zynq_board_read_rom_ethaddr(unsigned char *ethaddr)
 	return 0;
 }
 
+/* https://forums.xilinx.com/t5/Embedded-Linux/U-Boot-EL3/m-p/1167800 */
+#if 0
 unsigned long do_go_exec(ulong (*entry)(int, char * const []), int argc,
 			 char * const argv[])
 {
@@ -418,6 +421,7 @@ unsigned long do_go_exec(ulong (*entry)(int, char * const []), int argc,
 	}
 	return ret;
 }
+#endif
 
 #if !defined(CONFIG_SYS_SDRAM_BASE) && !defined(CONFIG_SYS_SDRAM_SIZE)
 int dram_init_banksize(void)

@@ -67,7 +67,7 @@
 
 #include <configs/xilinx_zynqmp.h>
 
-/* Allow baud rate of 921600 to speed up firmware updates. */
+/* Allow higher baud rates to speed up firmware updates. */
 #undef CONFIG_SYS_BAUDRATE_TABLE
 #define CONFIG_SYS_BAUDRATE_TABLE \
     { 4800, 9600, 19200, 38400, 57600, 115200, 921600, 1843200, 3686400 }

@@ -22,7 +22,7 @@ The first-stage bootloader (FSBL) and Power Management Unit (PMU) firmware are t
 
 The second-stage bootloader (U-Boot), however, needs to be tweaked and have its configuration compiled into the binary, so this repository is an automated way to build U-Boot so that it can boot bare metal apps on Trenz Xilinx ZyncMP SoM.
 
-The offsets in the flash memory are also reflected in the configuration of U-Boot; more specifically, the offsets are enbedded in U-Boot environment variables.
+The offsets in the flash memory are also reflected in the configuration of U-Boot; more specifically, the offsets are embedded in U-Boot environment variables, and can thus be changed dynamically after this custom version of U-Boot has been put on the device.
 
 The files in directory `src` hold the specific U-Boot configuration, so by changing these files you can make customisations.
 
@@ -32,7 +32,8 @@ This repository is meant to be built automatically by Jenkins in a container, us
 
 - Mount Xilinx Vivado tools into the container.
 - Download known-good version of U-Boot source code.
-- Compile U-Boot with specific configuration.
+- Patch specific U-Boot source files to enable U-Boot to run in EL-3 mode.
+- Compile U-Boot to be dynamically configurable.
 - Upload the binary result to an AWS S3 bucket.
 
 ## Build server
@@ -55,7 +56,7 @@ To emulate what Jenkins does when he builds the container, you can manually star
     $ cd automation
     $ docker-compose run uboot-te820 bash
 
-where the `XILINX` environment variable points to you local installation of Xilinx Vivado & SDK.
+where the `XILINX` environment variable points to your local installation of Xilinx Vivado & SDK.
 
 Docker-compose also mounts this repository inside the container under `/home/jenkins/workspace/uboot-te820` so there is direct access to make changes.
 

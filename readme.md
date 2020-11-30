@@ -62,9 +62,9 @@ Docker-compose also mounts this repository inside the container under `/home/jen
 
 Inside the container, run
 
-    $ cd ~/workspace
-    $ uboot-xilinx-zynqmp-te820/scripts/download-xilinx-uboot.sh
-    $ uboot-xilinx-zynqmp-te820/scripts/build.sh
+    $ cd ~/workspace/uboot-te820
+    $ scripts/download-xilinx-uboot.sh
+    $ scripts/build.sh
 
 ## Building the container
 

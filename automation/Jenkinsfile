@@ -55,19 +55,21 @@ pipeline {
         message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded"
       )
       script {
-        def artifacts = [
-          'u-boot.elf',
-          'include/configs/qdevil.h',
-          '.config'
-        ]
-        artifacts.each {
-          withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
-            s3Upload(
-              file: "u-boot-xlnx/${it}",
-              bucket: 'qdevil-artifacts',
-              path: "uboot/${env.BRANCH}/",
-              metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
-            )
+        if (!params.clean) {
+          def artifacts = [
+            'u-boot.elf',
+            'include/configs/qdevil.h',
+            '.config'
+          ]
+          artifacts.each {
+            withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
+              s3Upload(
+                file: "u-boot-xlnx/${it}",
+                bucket: 'qdevil-artifacts',
+                path: "uboot/${env.BRANCH}/",
+                metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
+              )
+            }
           }
         }
       }

@@ -47,26 +47,23 @@ pipeline {
         sh 'scripts/build.sh'
       }
     }
-  }
-  post {
-    success {
-      slackSend(
-        color: 'good',
-        message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded"
-      )
-      script {
-        if (!params.clean) {
+    stage('upload') {
+      when {
+        expression { !params.clean }
+      }
+      steps {
+        script {
           def artifacts = [
-            'u-boot.elf',
-            'include/configs/qdevil.h',
-            '.config'
+            ['u-boot.elf', 'u-boot.elf'],
+            ['qdevil.h', 'include/configs/qdevil.h'],
+            ['te820-config', '.config']
           ]
           artifacts.each {
             withAWS(credentials:'qdevil-aws-token', region:'eu-west-1') {
               s3Upload(
-                file: "u-boot-xlnx/${it}",
+                file: "u-boot-xlnx/${it[1]}",
                 bucket: 'qdevil-artifacts',
-                path: "uboot/${env.BRANCH}/",
+                path: "uboot/${env.BRANCH}/${it[0]}",
                 metadatas: ["repo:${env.JOB_NAME}", "branch:${env.BRANCH}", "commit:${env.GIT_COMMIT}"]
               )
             }
@@ -74,10 +71,25 @@ pipeline {
         }
       }
     }
+  }
+  post {
+    success {
+      slackSend(
+        color: 'good',
+        message: "${env.JOB_NAME} (branch ${env.BRANCH}) succeeded"
+      )
+    }
     failure {
       slackSend(
         color: 'bad',
         message: "${env.JOB_NAME} (branch ${env.BRANCH}) build ${env.BUILD_NUMBER} FAILED (<${env.BUILD_URL}/console|Output>)"
+      )
+    }
+    changed {
+      slackSend(
+        channel: 'ci-change',
+        color: (currentBuild.result == 'SUCCESS') ? 'good' : 'bad',
+        message: "${env.JOB_NAME} (branch ${env.BRANCH}) build ${env.BUILD_NUMBER} changed to ${currentBuild.result}"
       )
     }
   }

@@ -5,7 +5,7 @@
  * Jimmi Marquart <jim@qdevil.com>
  * Jens Peter Secher <jps@qdevil.com>
  *
- * SPDX-License-Identifier: ISC
+ * SPDX-License-Identifier: GPL-2.0+
  */
 
 #ifndef __CONFIG_QDEVIL_H
